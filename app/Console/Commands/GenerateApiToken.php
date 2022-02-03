@@ -41,7 +41,7 @@ class GenerateApiToken extends Command
      */
     public function handle()
     {
-        $integrationName = $this->ask('Integration (name):', 'discord-local');
+        $integrationName = $this->ask('Integration (name)', 'discord-local');
         $integration = $this->getIntegration($integrationName);
         if (is_null($integration) && $this->confirm('Is it okay if we create this integration?', true)) {
             $integration = new Integration();
@@ -52,12 +52,12 @@ class GenerateApiToken extends Command
             return 1;
         }
 
-        $name = $this->ask('Name:', 'api-token');
+        $name = $this->ask('Name', 'api-token');
         while ($this->nameAlreadyTaken($name, $integration)) {
             $name = $this->ask('This name is already taken. Please try another:');
         }
 
-        $description = $this->ask('Description (optional):');
+        $description = $this->ask('Description (optional)');
 
         $clientId = $this->generateNewClientId();
         $token = Str::random(32);
@@ -70,10 +70,13 @@ class GenerateApiToken extends Command
         $apiToken->token = Hash::make($token);
         $apiToken->save();
 
+        $base64Encoded = base64_encode("$clientId:$token");
+
         $this->info('Success: Credentials are below.');
         $this->info("Client id: $clientId");
         $this->info("Token: $token");
         $this->warn('This token cannot be retrieved again, so keep it safe!');
+        $this->info("Example auth header value: Bearer $base64Encoded");
         return 0;
     }
 
