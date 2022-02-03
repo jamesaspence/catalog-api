@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AuthenticateApiToken;
+use App\Http\Middleware\ForceJsonHeader;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -40,6 +42,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            ForceJsonHeader::class,
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -63,5 +66,6 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth.api-token' => AuthenticateApiToken::class,
     ];
 }
