@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\ApiToken;
+use App\Models\Integration;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -40,8 +41,16 @@ class GenerateApiToken extends Command
      */
     public function handle()
     {
+        $integrationName = $this->ask('Integration (name):', 'discord-local');
+        $integration = $this->getIntegration($integrationName);
+        if (is_null($integration) && $this->confirm('Is it okay if we create this integration?')) {
+            $integration = new Integration();
+            $integration->name = $integrationName;
+            $integration->save();
+        }
+
         $name = $this->ask('Name:', 'api-token');
-        while ($this->nameAlreadyTaken($name)) {
+        while ($this->nameAlreadyTaken($name, $integration)) {
             $name = $this->ask('This name is already taken. Please try another:');
         }
 
@@ -51,6 +60,7 @@ class GenerateApiToken extends Command
         $token = Str::random(32);
 
         $apiToken = new ApiToken();
+        $apiToken->integration()->associate($integration);
         $apiToken->name = $name;
         $apiToken->description = $description;
         $apiToken->client_id = $clientId;
@@ -64,10 +74,18 @@ class GenerateApiToken extends Command
         return 0;
     }
 
-    private function nameAlreadyTaken(string $name): bool
+    private function getIntegration(string $name): ?Integration
+    {
+        return Integration::query()
+            ->where('name', '=', $name)
+            ->first();
+    }
+
+    private function nameAlreadyTaken(string $name, Integration $integration): bool
     {
         return ApiToken::withTrashed()
             ->where('name', '=', $name)
+            ->where('integration_id', '=', $integration->id)
             ->exists();
     }
 

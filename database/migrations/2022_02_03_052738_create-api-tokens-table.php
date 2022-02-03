@@ -15,15 +15,18 @@ class CreateApiTokensTable extends Migration
     {
         Schema::create('api_tokens', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('client_id');
+            $table->integer('integration_id')->unsigned();
+            $table->string('client_id')->unique();
             $table->string('token');
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique('client_id');
-            $table->unique('name');
+            $table->unique(['integration_id', 'name']);
+            $table->foreign('integration_id')
+                ->references('id')
+                ->on('integrations');
         });
     }
 
