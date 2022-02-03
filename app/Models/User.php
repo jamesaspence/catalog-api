@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -13,6 +15,7 @@ use Illuminate\Notifications\Notifiable;
  * @property ?string $password
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property Collection $userIntegrations
  */
 class User extends Authenticatable
 {
@@ -34,4 +37,16 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = ['password'];
+
+    public function setEmailAttribute(string $email)
+    {
+        $this->attributes['email'] = strtolower($email);
+    }
+
+    public function userIntegrations(): BelongsToMany
+    {
+        return $this->belongsToMany(Integration::class)
+            ->using(UserIntegration::class)
+            ->withPivot(['external_id']);
+    }
 }
