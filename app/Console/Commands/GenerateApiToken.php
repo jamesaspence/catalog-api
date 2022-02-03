@@ -43,10 +43,13 @@ class GenerateApiToken extends Command
     {
         $integrationName = $this->ask('Integration (name):', 'discord-local');
         $integration = $this->getIntegration($integrationName);
-        if (is_null($integration) && $this->confirm('Is it okay if we create this integration?')) {
+        if (is_null($integration) && $this->confirm('Is it okay if we create this integration?', true)) {
             $integration = new Integration();
             $integration->name = $integrationName;
             $integration->save();
+        } else {
+            $this->error('There was no integration of that name. Please try another name and try again.');
+            return 1;
         }
 
         $name = $this->ask('Name:', 'api-token');
