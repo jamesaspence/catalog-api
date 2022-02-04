@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 /**
  * @property string $email
@@ -31,5 +32,12 @@ class RegisterRequest extends FormRequest
             'email' => 'required|email',
             'external_id' => 'required|string',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'email' => Str::lower($this->email),
+        ]);
     }
 }
