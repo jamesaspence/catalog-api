@@ -33,6 +33,11 @@ class ApiTokenProvider
         return $this->apiToken = $this->decodeToken($this->request);
     }
 
+    public function hasApiToken(): bool
+    {
+        return !is_null($this->getApiToken());
+    }
+
     private function decodeToken(Request $request): ?ApiToken
     {
         $token = $request->bearerToken();
