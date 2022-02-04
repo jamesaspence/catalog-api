@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Upload;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadGifRequest;
 use App\Http\Requests\UploadMetaRequest;
+use App\Jobs\IndexUpload;
 use App\Models\Tag;
 use App\Models\Upload;
 use App\Models\User;
@@ -54,6 +55,8 @@ class UploadController extends Controller
         // Mark as attached once any tags have been synced up
         $upload->attached = true;
         $upload->save();
+
+        IndexUpload::dispatch($upload);
 
         return response(null, 201);
     }
