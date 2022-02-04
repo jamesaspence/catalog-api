@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Auth\ApiTokenProvider;
+use App\Models\Upload;
 use App\Models\UserIntegration;
+use App\Policies\UploadPolicy;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Upload::class => UploadPolicy::class,
     ];
 
     /**
