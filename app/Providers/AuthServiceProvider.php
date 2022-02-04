@@ -61,6 +61,7 @@ class AuthServiceProvider extends ServiceProvider
                 return null;
             }
 
+            $userIntegration->user->setAuthenticatedUserIntegration($userIntegration);
             return $userIntegration->user;
         });
     }

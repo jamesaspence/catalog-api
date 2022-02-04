@@ -21,6 +21,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    private ?UserIntegration $authenticatedUserIntegration = null;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -46,5 +48,21 @@ class User extends Authenticatable
     public function userIntegrations(): HasMany
     {
         return $this->hasMany(UserIntegration::class);
+    }
+
+    /**
+     * @param UserIntegration $authenticatedUserIntegration
+     */
+    public function setAuthenticatedUserIntegration(UserIntegration $authenticatedUserIntegration): void
+    {
+        $this->authenticatedUserIntegration = $authenticatedUserIntegration;
+    }
+
+    /**
+     * @return ?UserIntegration
+     */
+    public function getAuthenticatedUserIntegration(): ?UserIntegration
+    {
+        return $this->authenticatedUserIntegration;
     }
 }
