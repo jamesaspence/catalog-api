@@ -5,12 +5,13 @@ namespace App\Http\Controllers\API\Auth;
 
 
 use App\Auth\ApiTokenProvider;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Models\ApiToken;
 use App\Models\User;
 use App\Models\UserIntegration;
 
-class RegisterController
+class RegisterController extends Controller
 {
     public function register(RegisterRequest $request, ApiTokenProvider $apiTokenProvider)
     {
