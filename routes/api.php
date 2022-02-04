@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\API\Upload\UploadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,5 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth.api-token')->group(function () {
     Route::prefix('/auth')->name('auth.')->group(function () {
         Route::post('register', [ RegisterController::class, 'register' ])->name('register');
+    });
+
+    Route::middleware('auth:external-id')->group(function () {
+        Route::post('/uploads', [ UploadController::class, 'uploadGif' ])->name('uploadGif');
     });
 });
