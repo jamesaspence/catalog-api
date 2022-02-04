@@ -22,6 +22,7 @@ class CreateUploadsTable extends Migration
         Schema::create('uploads', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_integration_id');
+            $table->boolean('attached')->default(false);
             $table->text('url');
             $table->timestamp('indexed_at')->nullable();
             $table->timestamps();
@@ -52,8 +53,8 @@ class CreateUploadsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('gif_tag');
-        Schema::dropIfExists('gifs');
+        Schema::dropIfExists('tag_upload');
         Schema::dropIfExists('tags');
+        Schema::dropIfExists('uploads');
     }
 }
