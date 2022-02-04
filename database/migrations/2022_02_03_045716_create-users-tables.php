@@ -28,12 +28,14 @@ class CreateUsersTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('integration_user', function (Blueprint $table) {
+        Schema::create('user_integrations', function (Blueprint $table) {
+            $table->increments('id');
             $table->text('external_id')->index();
             $table->integer('integration_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->unique(['integration_id', 'user_id']);
+            $table->timestamps();
 
+            $table->unique(['integration_id', 'user_id']);
             $table->foreign('integration_id')->references('id')
                 ->on('integrations');
             $table->foreign('user_id')->references('id')

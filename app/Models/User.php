@@ -5,7 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -43,10 +43,8 @@ class User extends Authenticatable
         $this->attributes['email'] = strtolower($email);
     }
 
-    public function userIntegrations(): BelongsToMany
+    public function userIntegrations(): HasMany
     {
-        return $this->belongsToMany(Integration::class)
-            ->using(UserIntegration::class)
-            ->withPivot(['external_id']);
+        return $this->hasMany(UserIntegration::class);
     }
 }
