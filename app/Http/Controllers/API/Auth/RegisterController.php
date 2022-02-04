@@ -8,6 +8,7 @@ use App\Auth\ApiTokenProvider;
 use App\Http\Requests\RegisterRequest;
 use App\Models\ApiToken;
 use App\Models\User;
+use App\Models\UserIntegration;
 
 class RegisterController
 {
@@ -22,23 +23,32 @@ class RegisterController
             ->where('email', '=', $request->email)
             ->first();
 
+        $userIntegration = null;
         if (!is_null($user)) {
-            $alreadyIntegrated = User::query()
-                ->join('integration_user', 'users.id', '=', 'integration_user')
-                ->where('user_id', '=', $user->id)
+            /** @var ?UserIntegration $userIntegration */
+            $userIntegration = $user->userIntegrations()
                 ->where('integration_id', '=', $apiToken->integration_id)
-                ->exists();
+                ->first();
 
-            if ($alreadyIntegrated) {
+            if (!is_null($userIntegration) && $userIntegration->external_id !== $request->external_id) {
                 return response(null, 403);
             }
         } else {
             $user = new User();
             $user->email = $request->email;
             $user->save();
-            $user->userIntegrations()->attach($apiToken->integration_id, [ 'external_id' => $request->external_id ]);
         }
 
-        return response(null, 204);
+        if (is_null($userIntegration)) {
+            $userIntegration = new UserIntegration();
+            $userIntegration->user()->associate($user);
+            $userIntegration->integration()->associate($apiToken->integration);
+            $userIntegration->external_id = $request->external_id;
+            $userIntegration->save();
+        }
+
+        return response([
+            'id' => $userIntegration->id
+        ]);
     }
 }
