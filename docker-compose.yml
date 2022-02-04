@@ -20,6 +20,7 @@ services:
             - '.:/var/www/html'
         networks:
             - sail
+            - elastic
         depends_on:
             - db
     db:
