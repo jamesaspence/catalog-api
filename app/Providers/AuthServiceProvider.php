@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use App\Auth\ApiTokenProvider;
+use App\Models\UserIntegration;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -33,6 +33,35 @@ class AuthServiceProvider extends ServiceProvider
             $application->refresh('request', $apiTokenProvider, 'setRequest');
 
             return $apiTokenProvider;
+        });
+
+        Auth::viaRequest('external-id', function (Request $request) {
+            /** @var ApiTokenProvider $apiTokenProvider */
+            $apiTokenProvider = app(ApiTokenProvider::class);
+            if (!$apiTokenProvider->hasApiToken()) {
+                return null;
+            }
+
+            $headerName = 'X-External-Id';
+            if (!$request->hasHeader($headerName)) {
+                return null;
+            }
+
+            $apiToken = $apiTokenProvider->getApiToken();
+            $externalId = $request->headers->get($headerName);
+
+            /** @var ?UserIntegration $userIntegration */
+            $userIntegration = UserIntegration::query()
+                ->with('user')
+                ->where('integration_id', '=', $apiToken->integration_id)
+                ->where('external_id', '=', $externalId)
+                ->first();
+
+            if (is_null($userIntegration)) {
+                return null;
+            }
+
+            return $userIntegration->user;
         });
     }
 
