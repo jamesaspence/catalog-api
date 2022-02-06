@@ -23,9 +23,13 @@ Route::middleware('auth.api-token')->group(function () {
     Route::middleware('auth:external-id')->group(function () {
         Route::prefix('/uploads')->name('uploads.')->group(function () {
             Route::post('/', [ UploadController::class, 'uploadGif' ])
+                ->middleware('can:create,upload')
                 ->name('upload');
-            Route::put('/{upload}/meta', [ UploadController::class, 'updateMeta' ])
-                ->name('updateMeta');
+            Route::prefix('/{upload}')->group(function () {
+                Route::put('/meta', [ UploadController::class, 'updateMeta' ])
+                    ->middleware('can:update,upload')
+                    ->name('updateMeta');
+            });
         });
     });
 });
