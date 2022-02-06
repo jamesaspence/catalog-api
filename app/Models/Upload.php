@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * @property int $id
  * @property int $user_integration_id
- * @property bool $attached
  * @property string $url
  * @property Carbon $indexed_at
  * @property Carbon $created_at
@@ -22,10 +21,6 @@ class Upload extends Model
 {
     protected $dates = [
         'indexed_at',
-    ];
-
-    protected $casts = [
-        'attached' => 'boolean',
     ];
 
     public function userIntegration(): BelongsTo
