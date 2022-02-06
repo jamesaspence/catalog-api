@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\Upload\UploadController;
+use App\Models\Upload;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,11 @@ Route::middleware('auth.api-token')->group(function () {
                 ->middleware('can:create,upload')
                 ->name('upload');
             Route::prefix('/{upload}')->group(function () {
+                Route::get('/', [ UploadController::class, 'getUpload' ])
+                    ->name('getUploadData');
+                Route::get('/file', [ UploadController::class, 'getFile' ])
+                    ->middleware('can:view,upload')
+                    ->name('getUploadFile');
                 Route::put('/meta', [ UploadController::class, 'updateMeta' ])
                     ->middleware('can:update,upload')
                     ->name('updateMeta');

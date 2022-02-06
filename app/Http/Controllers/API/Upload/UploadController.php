@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Upload;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadGifRequest;
 use App\Http\Requests\UploadMetaRequest;
+use App\Http\Resources\UploadDataResource;
 use App\Jobs\IndexUpload;
 use App\Models\Tag;
 use App\Models\Upload;
@@ -41,6 +42,19 @@ class UploadController extends Controller
         IndexUpload::dispatchAfterResponse($upload);
 
         return response(null, 201);
+    }
+
+    public function getUpload(Upload $upload)
+    {
+        $upload->loadMissing(['tags', 'userIntegration']);
+        return new UploadDataResource($upload);
+    }
+
+    public function getFile(Upload $upload)
+    {
+        // TODO figure out how to send back download of remote resource
+//        $url = $upload->url;
+//        return response()->download($url);
     }
 
     private function associateTags(Upload $upload, array $tags): void
