@@ -10,7 +10,6 @@ use App\Models\Tag;
 use App\Models\Upload;
 use App\Models\User;
 use Illuminate\Filesystem\FilesystemManager;
-use Illuminate\Support\Facades\Log;
 
 class UploadController extends Controller
 {
@@ -25,7 +24,9 @@ class UploadController extends Controller
         $upload->userIntegration()->associate($userIntegration);
         $upload->url = $filesystemManager->disk()
             ->url($path);
-        $upload->save();
+        $this->associateTags($upload, $request->tags);
+
+        IndexUpload::dispatch($upload);
 
         return response([
             'id' => $upload->id,
@@ -34,11 +35,20 @@ class UploadController extends Controller
 
     public function updateMeta(Upload $upload, UploadMetaRequest $request)
     {
+        $this->associateTags($upload, $request->tags);
+
+        IndexUpload::dispatch($upload);
+
+        return response(null, 201);
+    }
+
+    private function associateTags(Upload $upload, array $tags): void
+    {
         $existingTags = Tag::query()
-            ->whereIn('tag', $request->tags)
+            ->whereIn('tag', $tags)
             ->get();
 
-        $tagsToCreate = array_filter($request->tags, function (string $tag) use ($existingTags) {
+        $tagsToCreate = array_filter($tags, function (string $tag) use ($existingTags) {
             return is_null($existingTags->where('tag', $tag)->first());
         });
 
@@ -49,15 +59,7 @@ class UploadController extends Controller
             $existingTags->merge([ $tag ]);
         }
 
-        Log::debug($existingTags->toJson());
-
         $upload->tags()->sync($existingTags->pluck('id'));
-        // Mark as attached once any tags have been synced up
-        $upload->attached = true;
         $upload->save();
-
-        IndexUpload::dispatch($upload);
-
-        return response(null, 201);
     }
 }
