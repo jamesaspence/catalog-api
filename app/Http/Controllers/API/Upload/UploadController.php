@@ -24,6 +24,7 @@ class UploadController extends Controller
         $upload->userIntegration()->associate($userIntegration);
         $upload->url = $filesystemManager->disk()
             ->url($path);
+        $upload->save();
         $this->associateTags($upload, $request->tags);
 
         IndexUpload::dispatch($upload);
