@@ -24,16 +24,17 @@ Route::middleware('auth.api-token')->group(function () {
     Route::middleware('auth:external-id')->group(function () {
         Route::prefix('/uploads')->name('uploads.')->group(function () {
             Route::post('/', [ UploadController::class, 'uploadGif' ])
-                ->middleware('can:create,upload')
+                ->can('create', Upload::class)
                 ->name('upload');
             Route::prefix('/{upload}')->group(function () {
                 Route::get('/', [ UploadController::class, 'getUpload' ])
+                    ->can('view', 'upload')
                     ->name('getUploadData');
                 Route::get('/file', [ UploadController::class, 'getFile' ])
-                    ->middleware('can:view,upload')
+                    ->can('view', 'upload')
                     ->name('getUploadFile');
                 Route::put('/meta', [ UploadController::class, 'updateMeta' ])
-                    ->middleware('can:update,upload')
+                    ->can('update', 'upload')
                     ->name('updateMeta');
             });
         });
