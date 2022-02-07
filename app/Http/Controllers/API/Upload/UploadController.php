@@ -10,11 +10,21 @@ use App\Jobs\IndexUpload;
 use App\Models\Tag;
 use App\Models\Upload;
 use App\Models\User;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Filesystem\FilesystemManager;
 
 class UploadController extends Controller
 {
-    public function uploadGif(UploadGifRequest $request, FilesystemManager $filesystemManager)
+    private FilesystemManager $filesystemManager;
+    private Dispatcher $dispatcher;
+
+    public function __construct(FilesystemManager $filesystemManager, Dispatcher $dispatcher)
+    {
+        $this->filesystemManager = $filesystemManager;
+        $this->dispatcher = $dispatcher;
+    }
+
+    public function uploadGif(UploadGifRequest $request)
     {
         /** @var User $user */
         $user = $request->user();
@@ -24,13 +34,12 @@ class UploadController extends Controller
         $upload = new Upload();
         $upload->userIntegration()->associate($userIntegration);
         $upload->path = $path;
-        $upload->driver = $filesystemManager->getDefaultDriver();
-        $upload->url = $filesystemManager->disk()
+        $upload->driver = $this->filesystemManager->getDefaultDriver();
+        $upload->url = $this->filesystemManager->disk()
             ->url($path);
         $upload->save();
         $this->associateTags($upload, $request->tags);
-
-        IndexUpload::dispatch($upload);
+        $this->dispatcher->dispatch(new IndexUpload($upload));
 
         return response([
             'id' => $upload->id,
@@ -40,8 +49,7 @@ class UploadController extends Controller
     public function updateMeta(Upload $upload, UploadMetaRequest $request)
     {
         $this->associateTags($upload, $request->tags);
-
-        IndexUpload::dispatch($upload);
+        $this->dispatcher->dispatch(new IndexUpload($upload));
 
         return response(null, 201);
     }
@@ -52,9 +60,9 @@ class UploadController extends Controller
         return new UploadDataResource($upload);
     }
 
-    public function getFile(Upload $upload, FilesystemManager $filesystemManager)
+    public function getFile(Upload $upload)
     {
-        $filesystem = $filesystemManager->disk($upload->driver);
+        $filesystem = $this->filesystemManager->disk($upload->driver);
         return $filesystem->download($upload->path);
     }
 
