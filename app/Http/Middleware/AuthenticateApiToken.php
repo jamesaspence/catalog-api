@@ -24,7 +24,6 @@ class AuthenticateApiToken
      */
     public function handle(Request $request, Closure $next)
     {
-        $this->apiTokenProvider->setRequest($request);
         if (!$this->apiTokenProvider->hasApiToken()) {
             return response(null, 401);
         }

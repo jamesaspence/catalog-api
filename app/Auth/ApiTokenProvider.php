@@ -11,21 +11,16 @@ use Illuminate\Support\Str;
 
 class ApiTokenProvider
 {
-    private ?Request $request = null;
+    private Request $request;
     private ?ApiToken $apiToken = null;
 
-    public function setRequest(Request $request): void
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->apiToken = null;
     }
 
     public function getApiToken(): ?ApiToken
     {
-        if (is_null($this->request)) {
-            return null;
-        }
-
         if (!is_null($this->apiToken)) {
             return $this->apiToken;
         }

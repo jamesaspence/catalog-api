@@ -29,13 +29,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         parent::register();
 
-        $this->app->singleton(ApiTokenProvider::class, function (Application $application) {
-            $apiTokenProvider = new ApiTokenProvider();
-
-            $application->refresh('request', $apiTokenProvider, 'setRequest');
-
-            return $apiTokenProvider;
-        });
+        $this->app->scoped(ApiTokenProvider::class);
 
         Auth::viaRequest('external-id', function (Request $request) {
             /** @var ApiTokenProvider $apiTokenProvider */
