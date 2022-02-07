@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\API\Upload\SearchController;
 use App\Http\Controllers\API\Upload\UploadController;
 use App\Models\Upload;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,9 @@ Route::middleware('auth.api-token')->group(function () {
 
     Route::middleware('auth:external-id')->group(function () {
         Route::prefix('/uploads')->name('uploads.')->group(function () {
+            Route::get('/', [ SearchController::class, 'searchForGifs'])
+                ->can('viewAny', Upload::class)
+                ->name('search');
             Route::post('/', [ UploadController::class, 'uploadGif' ])
                 ->can('create', Upload::class)
                 ->name('upload');
