@@ -30,7 +30,7 @@ class UploadController extends Controller
         $upload->save();
         $this->associateTags($upload, $request->tags);
 
-        IndexUpload::dispatchAfterResponse($upload);
+        IndexUpload::dispatch($upload);
 
         return response([
             'id' => $upload->id,
@@ -41,7 +41,7 @@ class UploadController extends Controller
     {
         $this->associateTags($upload, $request->tags);
 
-        IndexUpload::dispatchAfterResponse($upload);
+        IndexUpload::dispatch($upload);
 
         return response(null, 201);
     }
