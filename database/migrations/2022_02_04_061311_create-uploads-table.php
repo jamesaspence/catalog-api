@@ -22,6 +22,8 @@ class CreateUploadsTable extends Migration
         Schema::create('uploads', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_integration_id');
+            $table->text('path');
+            $table->string('driver');
             $table->text('url');
             $table->timestamp('indexed_at')->nullable();
             $table->timestamps();

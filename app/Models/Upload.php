@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * @property int $id
  * @property int $user_integration_id
+ * @property string $path
+ * @property string $driver
  * @property string $url
  * @property Carbon $indexed_at
  * @property Carbon $created_at

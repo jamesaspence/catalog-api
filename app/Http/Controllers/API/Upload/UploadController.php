@@ -23,6 +23,8 @@ class UploadController extends Controller
 
         $upload = new Upload();
         $upload->userIntegration()->associate($userIntegration);
+        $upload->path = $path;
+        $upload->driver = $filesystemManager->getDefaultDriver();
         $upload->url = $filesystemManager->disk()
             ->url($path);
         $upload->save();
@@ -50,11 +52,10 @@ class UploadController extends Controller
         return new UploadDataResource($upload);
     }
 
-    public function getFile(Upload $upload)
+    public function getFile(Upload $upload, FilesystemManager $filesystemManager)
     {
-        // TODO figure out how to send back download of remote resource
-//        $url = $upload->url;
-//        return response()->download($url);
+        $filesystem = $filesystemManager->disk($upload->driver);
+        return $filesystem->download($upload->path);
     }
 
     private function associateTags(Upload $upload, array $tags): void
