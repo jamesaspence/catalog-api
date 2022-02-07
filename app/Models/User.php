@@ -41,7 +41,7 @@ class User extends Authenticatable
      */
     protected $hidden = ['password'];
 
-    public function setEmailAttribute(string $email)
+    public function setEmailAttribute(string $email): void
     {
         $this->attributes['email'] = strtolower($email);
     }

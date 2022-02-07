@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchRequest;
 use App\Services\Search\Elasticsearch\ElasticService;
 use App\Services\Search\SearchResult;
+use Illuminate\Http\Response;
 
 class SearchController extends Controller
 {
-    public function searchForGifs(SearchRequest $request, ElasticService $elasticService)
+    public function searchForGifs(SearchRequest $request, ElasticService $elasticService): Response
     {
         $results = $elasticService->fuzzySearch($request->text);
 

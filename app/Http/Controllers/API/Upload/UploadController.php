@@ -10,10 +10,12 @@ use App\Jobs\IndexUpload;
 use App\Models\Tag;
 use App\Models\Upload;
 use App\Models\User;
+use App\Models\UserIntegration;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UploadController extends Controller
@@ -31,8 +33,12 @@ class UploadController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        /** @var UserIntegration $userIntegration */
         $userIntegration = $user->getAuthenticatedUserIntegration();
-        $path = $request->file('image')->storePublicly("gifs/$userIntegration->id");
+        /** @var UploadedFile $file */
+        $file = $request->file('image');
+        /** @var string $path */
+        $path = $file->storePublicly("gifs/$userIntegration->id");
 
         $upload = new Upload();
         $upload->userIntegration()->associate($userIntegration);

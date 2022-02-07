@@ -8,16 +8,17 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\ApiToken;
 use App\Models\User;
 use App\Models\UserIntegration;
+use Illuminate\Http\Response;
 
 class RegisterController extends Controller
 {
-    public function register(RegisterRequest $request, ApiTokenProvider $apiTokenProvider)
+    public function register(RegisterRequest $request, ApiTokenProvider $apiTokenProvider): Response
     {
         // TODO better validation of unique email addresses, etc.
         /** @var ApiToken $apiToken */
         $apiToken = $apiTokenProvider->getApiToken();
 
-        /** @var User $user */
+        /** @var ?User $user */
         $user = User::query()
             ->where('email', '=', $request->email)
             ->first();
