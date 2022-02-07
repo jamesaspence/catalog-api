@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Models\Upload;
 use App\Services\Search\Elasticsearch\ElasticService;
 use Carbon\Carbon;
-use Elasticsearch\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,7 +14,10 @@ use Illuminate\Queue\SerializesModels;
 
 class IndexUpload implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private Upload $upload;
 

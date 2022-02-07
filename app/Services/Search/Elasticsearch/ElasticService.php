@@ -61,10 +61,10 @@ class ElasticService
                         'tags' => [
                             'query' => $text,
                             'fuzziness' => $fuzziness,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ]);
 
         return $this->searchResultTranslator->translateResults($response);

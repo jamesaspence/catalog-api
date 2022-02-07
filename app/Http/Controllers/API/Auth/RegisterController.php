@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Controllers\API\Auth;
-
 
 use App\Auth\ApiTokenProvider;
 use App\Http\Controllers\Controller;
@@ -49,7 +47,7 @@ class RegisterController extends Controller
         }
 
         return response([
-            'id' => $userIntegration->id
+            'id' => $userIntegration->id,
         ]);
     }
 }

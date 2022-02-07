@@ -13,7 +13,8 @@ class SearchController extends Controller
     {
         $results = $elasticService->fuzzySearch($request->text);
 
-        return response(collect($results)
+        return response(
+            collect($results)
             ->map(fn (SearchResult $result) => [
                 'id' => $result->getUploadId(),
                 'tags' => $result->getTags(),
