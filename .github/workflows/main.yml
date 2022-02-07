@@ -1,6 +1,11 @@
 name: PHP Build
 
-on: [push, pull_request]
+on:
+  - pull_request
+  push:
+    branches:
+      - develop
+      - main
 
 env:
   APP_KEY: 'base64:Z2l0aHViYWN0aW9uc2NhdGFsb2cxMjM0NQ=='
