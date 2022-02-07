@@ -4,6 +4,7 @@ includes:
 parameters:
     checkModelProperties: true
     checkMissingIterableValueType: false
+    checkOctaneCompatibility: true
     ignoreErrors:
         - '#Call to an undefined method Illuminate\\Contracts\\Container\\ContextualBindingBuilder::giveConfig\(\)\.#'
     level: 8
