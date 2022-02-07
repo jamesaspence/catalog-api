@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class ElasticSearchResultTranslator implements SearchResultTranslator
 {
-
     /**
      * @inheritdoc
      */

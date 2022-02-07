@@ -19,7 +19,8 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     private ?UserIntegration $authenticatedUserIntegration = null;
 
@@ -40,7 +41,7 @@ class User extends Authenticatable
      */
     protected $hidden = ['password'];
 
-    public function setEmailAttribute(string $email)
+    public function setEmailAttribute(string $email): void
     {
         $this->attributes['email'] = strtolower($email);
     }

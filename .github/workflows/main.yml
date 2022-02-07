@@ -1,0 +1,39 @@
+name: PHP Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - develop
+      - main
+
+env:
+  APP_KEY: 'base64:Z2l0aHViYWN0aW9uc2NhdGFsb2cxMjM0NQ=='
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '8.1'
+    - uses: actions/checkout@v2
+    - name: Get Composer Cache Directory
+      id: composer-cache
+      run: |
+        echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - uses: actions/cache@v2
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+    - uses: php-actions/composer@v6
+      with:
+        php_version: 8.1
+    - name: PHP CS Fixer
+      run: vendor/bin/php-cs-fixer fix --dry-run -v --show-progress none
+    - name: PHPStan
+      run: vendor/bin/phpstan analyze --memory-limit=1G --no-ansi --no-progress
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      run: vendor/bin/phpunit

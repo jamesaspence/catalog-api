@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Models\Upload;
 use App\Services\Search\Elasticsearch\ElasticService;
 use Carbon\Carbon;
-use Elasticsearch\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,7 +14,10 @@ use Illuminate\Queue\SerializesModels;
 
 class IndexUpload implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private Upload $upload;
 
@@ -36,7 +38,7 @@ class IndexUpload implements ShouldQueue
      */
     public function middleware(): array
     {
-        return [(new WithoutOverlapping($this->upload->id))->dontRelease()];
+        return [(new WithoutOverlapping(strval($this->upload->id)))->dontRelease()];
     }
 
     /**
@@ -47,7 +49,7 @@ class IndexUpload implements ShouldQueue
     public function handle(ElasticService $elasticService)
     {
         $upload = $this->upload;
-        $elasticService->indexDocument($upload->id, $this->translateToArray($upload));
+        $elasticService->indexDocument(strval($upload->id), $this->translateToArray($upload));
         $upload->indexed_at = Carbon::now();
         $upload->save();
     }

@@ -3,7 +3,6 @@
 namespace App\Services\Search\Elasticsearch;
 
 use App\Services\Search\SearchResult;
-use Illuminate\Support\Facades\Log;
 
 class ElasticSearchResult implements SearchResult
 {

@@ -28,7 +28,7 @@ class UploadMetaRequest extends FormRequest
     {
         return [
             'tags' => 'required|array|min:1',
-            'tags.*' => 'required|string'
+            'tags.*' => 'required|string',
         ];
     }
 }

@@ -31,7 +31,7 @@ class UploadGifRequest extends FormRequest
         return [
             'image' => 'required|image|mimes:gif|max:4096',
             'tags' => 'required|array|min:1',
-            'tags.*' => 'required|string'
+            'tags.*' => 'required|string',
         ];
     }
 }

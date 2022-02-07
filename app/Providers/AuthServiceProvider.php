@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Auth\ApiTokenProvider;
+use App\Models\ApiToken;
 use App\Models\Upload;
 use App\Models\UserIntegration;
 use App\Policies\UploadPolicy;
@@ -43,6 +44,7 @@ class AuthServiceProvider extends ServiceProvider
                 return null;
             }
 
+            /** @var ApiToken $apiToken */
             $apiToken = $apiTokenProvider->getApiToken();
             $externalId = $request->headers->get($headerName);
 

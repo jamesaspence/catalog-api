@@ -1,0 +1,13 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    checkModelProperties: true
+    checkMissingIterableValueType: false
+    checkOctaneCompatibility: true
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Contracts\\Container\\ContextualBindingBuilder::giveConfig\(\)\.#'
+    level: 8
+    paths:
+        - app
+        - tests
