@@ -5,7 +5,6 @@ namespace App\Http;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthenticateApiToken;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\ForceJsonHeader;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
@@ -66,7 +65,6 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            ForceJsonHeader::class,
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             SubstituteBindings::class,
