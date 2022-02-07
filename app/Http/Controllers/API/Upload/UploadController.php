@@ -12,6 +12,9 @@ use App\Models\Upload;
 use App\Models\User;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Filesystem\FilesystemManager;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UploadController extends Controller
 {
@@ -24,7 +27,7 @@ class UploadController extends Controller
         $this->dispatcher = $dispatcher;
     }
 
-    public function uploadGif(UploadGifRequest $request)
+    public function uploadGif(UploadGifRequest $request): Response
     {
         /** @var User $user */
         $user = $request->user();
@@ -46,7 +49,7 @@ class UploadController extends Controller
         ], 201);
     }
 
-    public function updateMeta(Upload $upload, UploadMetaRequest $request)
+    public function updateMeta(Upload $upload, UploadMetaRequest $request): Response
     {
         $this->associateTags($upload, $request->tags);
         $this->dispatcher->dispatch(new IndexUpload($upload));
@@ -54,13 +57,13 @@ class UploadController extends Controller
         return response(null, 201);
     }
 
-    public function getUpload(Upload $upload)
+    public function getUpload(Upload $upload): JsonResource
     {
         $upload->loadMissing(['tags', 'userIntegration']);
         return new UploadDataResource($upload);
     }
 
-    public function getFile(Upload $upload)
+    public function getFile(Upload $upload): StreamedResponse
     {
         $filesystem = $this->filesystemManager->disk($upload->driver);
         return $filesystem->download($upload->path);
