@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Upload;
+use App\Services\Search\Elasticsearch\ElasticService;
 use Carbon\Carbon;
 use Elasticsearch\Client;
 use Illuminate\Bus\Queueable;
@@ -41,17 +42,12 @@ class IndexUpload implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param Client $client
      * @return void
      */
-    public function handle(Client $client)
+    public function handle(ElasticService $elasticService)
     {
         $upload = $this->upload;
-        $client->index([
-            'id' => $upload->id,
-            'index' => 'uploads',
-            'body' => $this->translateToArray($upload),
-        ]);
+        $elasticService->indexDocument($upload->id, $this->translateToArray($upload));
         $upload->indexed_at = Carbon::now();
         $upload->save();
     }
